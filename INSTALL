@@ -1,0 +1,49 @@
+/****************************************************************************/
+/*                                                                        	*/
+/*	adn_c - Aplicación Cliente/Servidor para traducir cadenas de ADN.		*/
+/*                                                                        	*/
+/*			Internetworking - 2015                                   		*/
+/*                                                                        	*/
+/*       	UTN  | Universidad Tecnologica Nacional                         */
+/*       	FRLP | Facultad Regional La Plata                               */
+/*             	   Buenos Aires, Argentina                                  */
+/*                                                                        	*/
+/*       	> Cagliardi, Pablo Esteban    <cagliardipablo@yahoo.com.ar>     */
+/*                                                                        	*/
+/****************************************************************************/
+
+Servidor:
+
+	Compilar:
+		
+		1) cd servidor/
+		2) make clean
+		3) make
+
+	Ejecutar:
+
+		4) ./server [puerto]
+		   (puerto es un parametro opcional para especificar en 
+		    que puerto debe escuchar, por defecto es 5001)
+
+	Para moverlo a otro directorio son necesarios los archivos:
+				servidor
+				
+
+Cliente:
+
+	Compilar:
+
+		1) cd cliente/
+		2) make clean
+		3) make
+
+	Ejecutar:
+
+		4) ./client servidor puerto
+		   (servidor y puerto son dos parametros para
+		    espicificar el nombre de host y puerto del servidor
+		    por defecto se conectará a localhost 5001)
+
+	Para moverlo a otro directorio solo es necesario el archivo:
+				cliente

@@ -1,0 +1,19 @@
+/****************************************************************************/
+/*                                                                        	*/
+/*	adn_c - Aplicación Cliente/Servidor para traducir cadenas de ADN.	*/
+/*                                                                        	*/
+/*			Internetworking - 2015                                   		*/
+/*                                                                        	*/
+/*       	UTN  | Universidad Tecnologica Nacional                         */
+/*       	FRLP | Facultad Regional La Plata                               */
+/*             	   Buenos Aires, Argentina                                  */
+/*                                                                        	*/
+/*       	> Cagliardi, Pablo Esteban    <cagliardipablo@yahoo.com.ar>     */
+/*                                                                        	*/
+/****************************************************************************/
+
+Informacion de carpetas:
+
+	doc/		Documentacion general de adn_c
+	servidor/	Codigo fuente del servidor adn_c
+	cliente/	Codigo fuente del cliente adn_c
