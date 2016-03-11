@@ -22,7 +22,7 @@
 //HEADERS
 
 //VARIABLES
-int sockfd, portno, n;
+int sockfd, portno, conexion, n;
 struct sockaddr_in serv_addr;
 struct hostent *server;
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 
    if (argc < 3) {
       fprintf(stderr,"\nUtilice %s hostname puerto\nEjemplo: %s localhost 5001\n", argv[0], argv[0]);
-      exit(0);
+      exit(1);
    }
 
 	printf("\nAplicación Cliente para traducir cadenas de ADN v1.0");
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 
    if (server == NULL) {
       fprintf(stderr,"\nERROR, no se encuentra el host (no such host)\n");
-      exit(0);
+      exit(1);
    }
 
    bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -74,8 +74,10 @@ int main(int argc, char *argv[]) {
    bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
    serv_addr.sin_port = htons(portno);
 
-   /* Establece la coneccion con el server */
-   if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+   /* Establece la conexión con el server */
+	 conexion = connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+
+   if (conexion < 0) {
       perror("\nERROR conectando (connecting)\n");
       exit(1);
    }

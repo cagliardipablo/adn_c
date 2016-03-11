@@ -50,4 +50,4 @@ const char UKN [3] ="???";
 void setInformeADN(char *informe_ADN);
 void setInformeARN(char *informe_ARN);
 void setInformeAmino(char *informe_Amino);
-int getAminoacido(char *codon);
+void getAminoacido(char codon, char* amino3, int buffersize);

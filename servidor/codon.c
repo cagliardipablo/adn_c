@@ -18,55 +18,33 @@
 #include <string.h>
 
 //VARIABLES
-int conta_Phe,conta_Leu ,conta_Ile ,conta_Met ,conta_Val ,conta_Ser ,conta_Pro ,conta_Thr ,conta_Ala ,conta_Tyr ,conta_Stp ,conta_His ,conta_Gln ,conta_Asn ,conta_Lys ,conta_Asp ,conta_Glu ,conta_Cys ,conta_Trp ,conta_Arg ,conta_Gly,conta_XXX ;
-char codon[3];
-char aminoAcido[3]="???";
+//char codon[3];
 
-//CONSTANTS
-const char PHE [3] ="Phe";
-const char LEU [3] ="Leu";
-const char ILE [3] ="Ile";
-const char MET [3] ="Met";
-const char VAL [3] ="Val";
-const char SER [3] ="Ser";
-const char PRO [3] ="Pro";
-const char THR [3] ="Thr";
-const char ALA [3] ="Ala";
-const char TYR [3] ="Tyr";
-const char STP [3] ="Stp";
-const char HIS [3] ="His";
-const char GLN [3] ="Gln";
-const char ASN [3] ="Asn";
-const char LYS [3] ="Lys";
-const char ASP [3] ="Asp";
-const char GLU [3] ="Glu";
-const char CYS [3] ="Cys";
-const char TRP [3] ="Trp";
-const char ARG [3] ="Arg";
-const char GLY [3] ="Gly";
-const char UKN [3] ="???";
 
 //FUNCIONES
 void setInformeADN(char *informe_ADN) {
-	//int conta_A_ADN, conta_C_ADN, conta_G_ADN, conta_T_ADN, conta_X_ADN =0; //Cuenta la cantidad de nucleotidos en ADN
+	/*int conta_A_ADN, conta_C_ADN, conta_G_ADN, conta_T_ADN, conta_X_ADN =0; //Cuenta la cantidad de nucleotidos en ADN
 	informe_ADN = "A:" + conta_A_ADN + "\n" +
 				  "C:" + conta_C_ADN + "\n" +
 				  "G:" + conta_G_ADN + "\n" +
 				  "T:" + conta_T_ADN + "\n" +
 				  "?:" + conta_X_ADN + "\n";
+	*/
 }
 
 void setInformeARN(char *informe_ARN) {
-	//int conta_A_ARN, conta_C_ARN, conta_G_ARN, conta_U_ARN, conta_X_ARN =0; //Cuenta la cantidad de nucleotidos en ARN
+	/*int conta_A_ARN, conta_C_ARN, conta_G_ARN, conta_U_ARN, conta_X_ARN =0; //Cuenta la cantidad de nucleotidos en ARN
   informe_ARN = "A:" + conta_A_ARN + "\n" +
           "C:" + conta_C_ARN + "\n" +
           "G:" + conta_G_ARN + "\n" +
           "U:" + conta_U_ARN + "\n" +
           "?:" + conta_X_ARN + "\n";
+	*/
 }
 
 void setInformeAmino(char *informe_Amino) {
-	//int conta_Phe,conta_Leu ,conta_Ile ,conta_Met ,conta_Val ,conta_Ser ,conta_Pro ,conta_Thr ,conta_Ala ,conta_Tyr ,conta_Stp ,conta_His ,conta_Gln ,conta_Asn ,conta_Lys ,conta_Asp ,conta_Glu ,conta_Cys ,conta_Trp ,conta_Arg ,conta_Gly, conta_XXX =0 ;
+/*
+	int conta_Phe,conta_Leu ,conta_Ile ,conta_Met ,conta_Val ,conta_Ser ,conta_Pro ,conta_Thr ,conta_Ala ,conta_Tyr ,conta_Stp ,conta_His ,conta_Gln ,conta_Asn ,conta_Lys ,conta_Asp ,conta_Glu ,conta_Cys ,conta_Trp ,conta_Arg ,conta_Gly, conta_XXX =0 ;
   informe_Amino = "Phe:" + conta_Phe + "\n" +
                   "Leu:" + conta_Leu + "\n" +
                   "Ile:" + conta_Ile + "\n" +
@@ -88,9 +66,43 @@ void setInformeAmino(char *informe_Amino) {
                   "Trp:" + conta_Trp + "\n" +
                   "Arg:" + conta_Arg + "\n" +
                   "?:" + conta_XXX + "\n";
+*/
 }
 
-int getAminoacido(char *codon){
+void getAminoacido(char codon, char *amino3[3], int buffersize){
+	//CONSTANTS
+	const char PHE [3] ="Phe";
+	const char LEU [3] ="Leu";
+	const char ILE [3] ="Ile";
+	const char MET [3] ="Met";
+	const char VAL [3] ="Val";
+	const char SER [3] ="Ser";
+	const char PRO [3] ="Pro";
+	const char THR [3] ="Thr";
+	const char ALA [3] ="Ala";
+	const char TYR [3] ="Tyr";
+	const char STP [3] ="Stp";
+	const char HIS [3] ="His";
+	const char GLN [3] ="Gln";
+	const char ASN [3] ="Asn";
+	const char LYS [3] ="Lys";
+	const char ASP [3] ="Asp";
+	const char GLU [3] ="Glu";
+	const char CYS [3] ="Cys";
+	const char TRP [3] ="Trp";
+	const char ARG [3] ="Arg";
+	const char GLY [3] ="Gly";
+	const char UKN [3] ="???";
+
+	int conta_Phe,conta_Leu ,conta_Ile ,conta_Met ,conta_Val ,conta_Ser ,conta_Pro ,conta_Thr ,conta_Ala ,conta_Tyr ,conta_Stp ,conta_His ,conta_Gln ,conta_Asn ,conta_Lys ,conta_Asp ,conta_Glu ,conta_Cys ,conta_Trp ,conta_Arg ,conta_Gly,conta_XXX ;
+	char aminoAcido[3]="???";
+
+	//char codon[3];
+
+	//strcpy(codon,codontmp);
+
+	//memset(aminoAcido, '\0', 3);
+
   if ((strcmp(codon, "UUU")==0)||(strcmp(codon, "UUC")==0)) {
       strcpy(aminoAcido,PHE); //Phenylalanine
       conta_Phe++;
@@ -180,4 +192,9 @@ int getAminoacido(char *codon){
     	strcpy(aminoAcido,UKN);
       conta_XXX++;
   }
+
+	printf("Dentro de codon.c: %s\n", aminoAcido);
+
+	strcpy(amino3, aminoAcido); //Retorna el aminoacido de 3 caracteres
+	amino3[buffersize-1] = '\0';
 }

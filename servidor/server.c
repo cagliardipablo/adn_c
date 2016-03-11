@@ -31,6 +31,7 @@ int fdmax;	// numero máximo de file descriptor
 char buffer[256];	//tamaño del buffer de intercambio
 char respuesta[256];
 char codon[3];
+char *aminoAcidoRNA3[3];
 struct sockaddr_in serv_addr, cli_addr;
 
 //MAIN
@@ -66,7 +67,7 @@ int main( int argc, char *argv[] ) {
 
    /* Inicializando la estructura socket */
    bzero((char *) &serv_addr, sizeof(serv_addr));
-   portno = argv[1];	//Puerto
+   portno = atoi(argv[1]);  //Puerto
 
    serv_addr.sin_family = AF_INET;
    serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -147,12 +148,18 @@ int main( int argc, char *argv[] ) {
 							else {if (buffer[i] == 'T'){ respuesta[i]='A';}
 							else {respuesta[i]='?';}}}}
 							printf("%c",respuesta[i]);
-              if ((i mod 3)==0) {
-                codon = buffer[i-2]+buffer[i-1]+buffer[i]
-                getAminoacido(codon)
+
+              strncat (codon, &respuesta[i], 1);
+
+              if (((i+1) % 3)==0) {
+                printf("\nCodon:(antes) %s\n", codon);
+                getAminoacido(codon,aminoAcidoRNA3,sizeof(aminoAcidoRNA3));
+                printf("\nAminoacido: %s\n", &aminoAcidoRNA3);
+                codon[0]='\0';
               }
 						}
 
+            printf("\nCodon:(despues) %s\n", codon);
 						printf("\n");
 
 						for(j = 0; j <= fdmax; j++) {
