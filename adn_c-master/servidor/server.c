@@ -1,0 +1,193 @@
+/****************************************************************************/
+/*                                                                        	*/
+/*	adn_c - Aplicación Cliente/Servidor para traducir cadenas de ADN.		*/
+/*                                                                        	*/
+/*			Internetworking - 2015                                   		*/
+/*                                                                        	*/
+/*       	UTN  | Universidad Tecnologica Nacional                         */
+/*       	FRLP | Facultad Regional La Plata                               */
+/*             	   Buenos Aires, Argentina                                  */
+/*                                                                        	*/
+/*       	> Cagliardi, Pablo Esteban    <cagliardipablo@yahoo.com.ar>     */
+/*                                                                        	*/
+/****************************************************************************/
+
+//INCLUDES
+#include <stdio.h>
+#include <stdlib.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <string.h>
+#include "codon.h"
+#include <arpa/inet.h>
+
+//HEADERS
+
+//VARIABLES
+int sockfd, newsockfd, portno, clilen;
+int  nbytes;	// numero de bytes enviados/recibidos
+int yes=1;	// para reusar direcciones en setsockopt() SO_REUSEADDR
+int i,j;		// para estructuras de control
+int fdmax;	// numero máximo de file descriptor
+char buffer[256];	//tamaño del buffer de intercambio
+char respuesta[256];
+char codon[3];
+char *aminoAcidoRNA3;
+struct sockaddr_in serv_addr, cli_addr;
+//char inet;
+
+//MAIN
+int main( int argc, char *argv[] ) {
+
+   if (argc < 2) {
+      fprintf(stderr,"\nUtilice %s puerto\nEjemplo: %s 5001\n", argv[0], argv[0]);
+      exit(0);
+   }
+
+	fd_set master;	// master file descriptor list
+	fd_set read_fds; // temp file descriptor list for select()
+
+	FD_ZERO(&master);	// Inicializa el master y el temp
+	FD_ZERO(&read_fds);
+
+	printf("\nAplicación Servidor para traducir cadenas de ADN v1.0\n");
+
+   /* Primera llamada a la funcion socket() */
+   sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+   if (sockfd < 0) {
+      perror("\nERROR abriendo socket (open socket)");
+      exit(1);
+   }
+
+	// Previene el molesto mensaje de error "address already in use"
+	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes,
+		sizeof(int)) == -1) {
+		perror("\nERROR setsockopt");
+		exit(1);
+	}
+
+   /* Inicializando la estructura socket */
+   bzero((char *) &serv_addr, sizeof(serv_addr));
+   portno = atoi(argv[1]);  //Puerto
+
+	//printf("Puerto: %i",portno);
+
+   serv_addr.sin_family = AF_INET;
+   serv_addr.sin_addr.s_addr = INADDR_ANY;
+   serv_addr.sin_port = htons(portno);
+
+   /* Enlazamos la direccion del host utilizando la llamada a bind() */
+   if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+      perror("\nERROR de enlace (on binding)");
+      exit(1);
+   }
+
+	/* Ahora, se inicia la escucha (listening) de los clientes y el proceso
+		*pasara a modo de suspeension (sleep) y esperara conecciones entrantes.
+	*/
+
+   listen(sockfd,5);
+
+	if (listen(sockfd, 5) < 0) {
+		perror("\nERROR listen");
+		exit(1);
+	}
+
+	// Agregamos el listener al master
+	FD_SET(sockfd, &master);
+
+	// Mantenemos el mayor file descriptor
+	fdmax = sockfd; // Por ahora, es este
+
+	// main loop
+	for(;;) { //Bucle infinito
+
+		read_fds = master; // Lo copiamos
+		if (select(fdmax+1, &read_fds, NULL, NULL, NULL) < 0) {
+			perror("\nERROR select");
+			exit(1);
+		}
+
+		//Recorre las conexiones existentes en busca de datos para leer
+		for(i = 0; i <= fdmax; i++) {
+
+			if (FD_ISSET(i, &read_fds)) { // Obtenemos una conexion
+
+				if (i == sockfd) {	// Si es nueva
+
+					clilen = sizeof(cli_addr);
+					if ((newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr,&clilen)) < 0) { //Evaluamos la aceptacion
+						perror("\nERROR accept");
+					} else { //Aceptada!
+						FD_SET(newsockfd, &master); // La agregamos al master set
+						
+						if (newsockfd > fdmax) {
+							fdmax = newsockfd;	// Mantenemos el nro maximo
+						}
+					//inet=inet_ntoa(cli_addr.sin_addr);
+					//printf("inet: %s\n",inet);
+					printf("\nselectserver: nueva conexion desde %s en el socket %d\n", inet_ntoa(cli_addr.sin_addr), newsockfd);
+					}
+
+				} else {	//Si no es nueva
+					// Manejamos los datos del cliente
+
+					bzero(buffer,sizeof(buffer));	//Inicializo el buffer
+
+					if ((nbytes = recv(i, buffer, sizeof(buffer), 0)) <= 0) {// Si existe un error en la recepcion o la conexion se cierra por el cliente
+
+						if (nbytes == 0) {	// Conexion cerrada
+							printf("\nselectserver: socket %d suspendio la conexion\n", i);
+						} else {
+							perror("\nERROR recv");
+						}
+
+						close(i); // bye!
+						FD_CLR(i, &master); // Eliminamos la conexion del master set
+					} else {	//Recibimos algo del cliente !!!
+						printf("\nEste es el mensaje: %sLongitud: %i\n",buffer, (int)strlen(buffer)-1);  //Mensaje (buffer)!!!
+
+					   //Traduce la cadena
+						printf("Respuesta\n");
+						
+						for (i=0;i<(strlen(buffer)-1);i++){
+							if (buffer[i] == 'A'){ respuesta[i]='U';}
+							else {if (buffer[i] == 'C'){ respuesta[i]='G';}
+							else {if (buffer[i] == 'G'){ respuesta[i]='C';}
+							else {if (buffer[i] == 'T'){ respuesta[i]='A';}
+							else {respuesta[i]='?';}}}}
+							//printf("%c",respuesta[i]);
+
+              				strncat (codon, &respuesta[i], 1);
+
+							  if (((i+1) % 3)==0) {
+								printf("Codon: %s",codon);
+								aminoAcidoRNA3=getAminoacido(codon);
+								printf("\tAminoacido: %s\n", aminoAcidoRNA3);
+								codon[0]='\0';
+							  }
+						}
+
+						for(j = 0; j <= fdmax; j++) {
+							// Enviamos la respuesta a los destinatarios!
+							if (FD_ISSET(j, &master)) {
+								// excepto el oyente y nosotros mismos
+								if (j != sockfd && j != i) {
+
+								   nbytes = send(j,respuesta,strlen(buffer)-1,0); /* Escribe la respuesta al cliente */
+
+								   if (nbytes < 0) {
+									  perror("\nERROR escribiendo al socket (writing to socket)");
+									  exit(1);
+								   }
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+  return 0;
+}
